@@ -1,159 +1,274 @@
-import { useState } from "react"
+import { useMemo, useState } from "react";
 
-interface TipInterface{
-    bill: number 
-    people: number 
-    tipPercent: number
+interface FormData {
+  bill: string;
+  people: string;
+  tipPercent: number;
+  customTip: string;
 }
 
+interface Errors {
+  bill?: string;
+  people?: string;
+}
 
+export default function Tip() {
+  const [formData, setFormData] = useState<FormData>({
+    bill: '',
+    people: '',
+    tipPercent: 0,
+    customTip: '',
+  });
 
+  const [errors, setErrors] = useState<Errors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-export default function Tip(){
+  const tipBtns = [10, 15, 20];
 
-    const [userInput, setUserInput] = useState<TipInterface>({
-        bill: 0,
-        people: 0,
-        tipPercent: 0
-    });
+  function validate(name: string, value: number) {
+    let error = "";
 
-    const [tipPercent, setTipPercent] = useState<number>(0);
-    const [customTip, setCustomTip] = useState('');
-    const [errors, setErrors] = useState<{ [key: string]: string }>({
-        bill: '',
-        people: ''
-    });
-    const [touched, setTouched] = useState<{ [key: string]: boolean }>({
-        bill: false,
-        people: false
-    });
-
-
-    const validate = (name: string, value: any) => {
-        let errorMsg = '';
-        if (value==='' || value===0) {
-            errorMsg = 'Field cannot be empty';
-        } 
-        else if (isNaN(value) || Number(value) < 0 || !Number.isInteger(Number(value))) {
-            errorMsg = 'Please enter a valid number';
-        } 
-       
-        setErrors(prev => ({ ...prev, [name]: errorMsg }));
-    };
-
-    const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTouched({ ...touched, [e.target.name]: true });
-    };
-
-    function handleUserInput(e: React.ChangeEvent<HTMLInputElement| HTMLButtonElement>){
-        const { name, value } = e.target;
-        setUserInput((prev)=>({
-            ...prev,
-            [name] : value
-        }));
-        validate(name, value)
+    if (!value || value <= 0) {
+        error = "Field cannot be empty";
     }
 
-    function handleReset(){
-        setCustomTip('')
-        setErrors({})
-        setTipPercent(0)
-        setUserInput({bill:0, people:0, tipPercent: 0})
+    if (value < 0) {
+        error = "Negative values are not allowed";
     }
 
-    const tipBtns = [10, 15, 20]
+    if (name === "people" && !Number.isInteger(value)) {
+        error = "Must be a whole number";
+    }
 
-    const finalTipPercent = customTip ? Number(customTip) : tipPercent || 0;
-    let amount = (finalTipPercent/100) * userInput.bill;
-    let total = Number(amount) + Number(userInput.bill);
-    let person = userInput.people ? Math.ceil(total/userInput.people) : 0
+    setErrors((prev) => ({
+        ...prev,
+        [name]: error,
+    }));
+  }
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
 
-    return(
-        <section className="flex justify-center items-center  h-screen">
-            <div className="p-4 pb-6  my-6 flex flex-col justify-center w-10/12 md:w-2/3 bg-white/10 backdrop-blur-md border border-blue-900/20 rounded-2xl shadow-xl max-w-3xl">
-                <div className="mb-8">
-                    <h1 className="text-center font-bold">Tip Calculator</h1>
-                    <p className="text-center">Enter your details</p>
+    if (value === "") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+
+      return;
+    }
+
+    const parsedValue = Number(value);
+
+    if (!Number.isFinite(parsedValue)) return;
+
+    if (parsedValue < 0) return;
+
+    if (parsedValue > 1_000_000_000) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "Value is too large",
+      }));
+      return;
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+
+    if (name === "customTip") {
+      setFormData((prev) => ({
+        ...prev,
+        customTip: value,
+        tipPercent: 0,
+      }));
+
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    validate(name, parsedValue);
+  }
+
+  function handleBlur( e: React.FocusEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+    validate(name, Number(value));
+
+  }
+
+  function handleTipClick(value: number) {
+    setFormData((prev) => ({
+      ...prev,
+      tipPercent: value,
+      customTip: "",
+    }));
+  }
+
+  function handleReset() {
+    setFormData({
+      bill: '',
+      people: '',
+      tipPercent: 0,
+      customTip: "",
+    });
+
+    setErrors({});
+    setTouched({});
+  }
+
+  const bill = Number(formData.bill) || 0;
+  const people = Number(formData.people) || 0;
+  const customTip = Number(formData.customTip) || 0;
+
+  const finalTipPercent = useMemo(() => {
+    return formData.customTip
+      ? customTip
+      : formData.tipPercent;
+  }, [customTip, formData.customTip, formData.tipPercent]);
+
+  const tipAmount = useMemo(() => {
+    return (finalTipPercent / 100) * bill;
+  }, [finalTipPercent, bill]);
+
+  const total = useMemo(() => {
+    return bill + tipAmount;
+  }, [bill, tipAmount]);
+
+  const perPerson = useMemo(() => {if (!people) return 0;
+    return total / people;
+  }, [total, people]);
+
+  return (
+    <section className="flex justify-center items-center h-screen">
+      <div className="p-4 pb-6 my-6 flex flex-col bg-white justify-center w-10/12 md:w-2/3 backdrop-blur-md  border border-purple-900/20 rounded-2xl shadow-slate-500 shadow-lg max-w-3xl">
+
+        <h1 className="text-center font-bold text-[#6c20df] text-2xl mb-4">
+          Tip Calculator
+        </h1>
+
+        <div className="flex md:flex-row flex-col gap-4">
+
+          <div className="md:w-1/2 w-full border px-3 py-5 border-purple-400 rounded-lg">
+
+            <div className="flex flex-col mb-6">
+                <label>Bill</label>
+
+                <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+
+                    <input
+                    type="number"
+                    name="bill"
+                    value={formData.bill}
+                    onChange={handleChange}
+                    max="1000000000"
+                    onBlur={handleBlur}
+                    className="w-full pl-8 pr-4 py-2 outline-[#6c20df] border rounded-lg border-[#6c20df]"
+                    />
                 </div>
-                <div className="flex md:flex-row flex-col gap-4">
-                    <div className="md:w-1/2 w-full border px-3 py-5 border-green-400 rounded-lg">
-                        <div className="flex flex-col mb-6">
-                            <label htmlFor="">Bill</label>
-                            <input className="px-4 py-2 outline-0 border rounded-lg border-blue-500" 
-                                name="bill" 
-                                value={userInput.bill} 
-                                onChange={handleUserInput}
-                                onBlur={handleBlur}
-                            />
-                            {touched.bill && errors.bill && (<p className="text-xs text-red-500">{errors.bill}</p>)}
-                        </div>
-                        <div className="mb-6 w-full">
-                            <label>Tip Percentage</label>
+            {touched.bill && errors.bill && (<p className="text-xs text-red-500 mt-1">{errors.bill} </p>)}
+        </div>
 
-                            <div className="mt-2 flex gap-3 w-full flex-nowrap">
-                                {tipBtns.map((btn) => (
-                                <button
-                                    key={btn}
-                                    onClick={() => setTipPercent(btn)}
-                                    className={`flex-1 py-2 cursor-pointer text-center rounded-lg border transition ${
-                                    tipPercent === btn
-                                        ? "bg-purple-600 text-white"
-                                        : "bg-white text-black"
-                                    }`}
-                                >
-                                    {btn}%
-                                </button>
-                                ))}
+            <div className="mb-6">
+              <label>Tip Percentage</label>
 
-                                <input
-                                    type="number"
-                                    value={customTip}
-                                    onChange={(e) => setCustomTip(e.target.value)}
-                                    className="flex-1 border text-center rounded-lg py-2 min-w-0"
-                                    placeholder="Custom"
-                                />
-                            </div>
+              <div className="mt-2 flex gap-3 w-full">
 
-                            <p className="text-xs mt-1">
-                                Select a preset or enter a custom tip %
-                            </p>
-                            </div>
-                        <div className="flex flex-col gap-2">
-                            <label>Number of People</label>
-                            <input 
-                                className="outline-0 px-4 py-2 border border-blue-400 rounded-lg"
-                                name="people" 
-                                value={userInput.people} 
-                                onChange={handleUserInput}
-                            />
-                            {errors.people && <p className="text-xs text-red-500">{errors.people}</p>}
+                {tipBtns.map((btn) => (
+                  <button
+                    key={btn}
+                    onClick={() => handleTipClick(btn)}
+                    className={`flex-1 min-w-0 py-2 rounded-lg cursor-pointer border border-purple-400 ${
+                      formData.tipPercent === btn
+                        ? "bg-[#6c20df] text-white"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    {btn}%
+                  </button>
+                ))}
 
-                        </div>
-                    </div>
-
-                    <div className="border-green-400 px-3 flex-col gap-8 py-5 rounded-lg md:w-1/2 border">
-                        <p className="text-center mb-4 font-bold text-lg">Your Results</p>
-
-                        <div className="flex mb-6 justify-between border border-blue-400 rounded-lg items-center px-4 py-4 flex-row">
-                            <p className="font-bold">Tip</p>
-                            <p className="font-bold">$ {amount.toFixed(2)}</p>
-                        </div>
-
-                        <div className="flex  mb-6 justify-between border border-blue-400 rounded-lg px-4 py-4">
-                            <p className="font-bold">Total (bill+tip)</p>
-                            <p className="font-bold">$ {total}</p>
-                        </div>
-
-                        <div className="flex justify-between border border-blue-400 rounded-lg px-4 py-4">
-                            <p className="font-bold ">Amount Per Person</p>
-                            <p className="font-bold ">$ {person}</p>
-                        </div>
-                    </div>
-
-                </div>
-                    <button className="px-4 py-2 rounded-lg mt-4 mx-auto cursor-pointer bg-blue-700 font-bold text-white w-20" onClick={handleReset}>Reset</button>
+                <input
+                  type="number"
+                  name="customTip"
+                  value={formData.customTip}
+                  max="1000000"
+                  onChange={handleChange}
+                  placeholder="Custom"
+                  className="flex-1 min-w-0 border text-center border-purple-400 outline-[#6c20df] rounded-lg py-2"
+                />
+              </div>
             </div>
-        </section>
-    )
+
+            <div className="flex flex-col gap-2">
+              <label>Number of People</label>
+
+              <input
+                type="number"
+                name="people"
+                value={formData.people}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="outline-[#6c20df] px-4 py-2 border border-purple-400 rounded-lg"
+              />
+
+              {touched.people && errors.people && (
+                <p className="text-xs text-red-500">
+                  {errors.people}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="border-purple-400 px-3 py-5 rounded-lg md:w-1/2 border">
+
+            <p className="text-center text-[#6c20df] mb-4 font-bold text-lg">
+              Your Results
+            </p>
+
+            <div className="flex mb-6 justify-between border border-purple-400 rounded-lg items-center px-4 py-4">
+              <p className="font-bold">Tip</p>
+              <p className="font-bold">
+                ${tipAmount.toFixed(2)}
+              </p>
+            </div>
+
+            <div className="flex mb-6 justify-between border border-purple-400 rounded-lg px-4 py-4">
+              <p className="font-bold">Total</p>
+              <p className="font-bold">
+                ${total.toFixed(2)}
+              </p>
+            </div>
+
+            <div className="flex justify-between border border-purple-400 rounded-lg px-4 py-4">
+              <p className="font-bold">
+                Amount Per Person
+              </p>
+
+              <p className="font-bold">
+                ${perPerson.toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          className="px-4 py-2 rounded-lg mt-4 mx-auto cursor-pointer bg-purple-700 font-bold text-white w-20"
+          onClick={handleReset}
+        >
+          Reset
+        </button>
+      </div>
+    </section>
+  );
 }

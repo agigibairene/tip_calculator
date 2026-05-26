@@ -3,7 +3,7 @@ import Tip from "./components/Tip";
 function App() {
 
   return (
-    <div className="bg-white/25 h-screen">
+    <div className="w-full bg-[#e9e2e8]">
       <Tip />
     </div>
   )
