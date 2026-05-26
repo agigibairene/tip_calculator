@@ -1,9 +1,9 @@
 ## How to run
-### Prerequisites
+##### Prerequisites
 1. [NODE](https://nodejs.org/en/download)
 2. [TYPESCRIPT](https://www.typescriptlang.org/download/)
 
-### Deployed Links  
+##### Deployed Links  
 1. [Visit UI](https://tip-calculator-u5o1.vercel.app/)
 2. [GitHub](https://github.com/agigibairene/tip_calculator)
 
