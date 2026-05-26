@@ -11,7 +11,7 @@
 ## Stack & design choices
 | Component         | Technology                          |
 |-------------------|-------------------------------------|
-| Database          | React Typescript                    |
+| Framework         | React Typescript                    |
 | Styling           | Tailwind CSS                        |
 
 1. The choice of React is rooted in its high-performance capabilities, primarily due to its utilization of the Virtual DOM. This enhances speed and high performance. The reusability feature of React components enables maintainability by breaking user interface (UI) components into manageable pieces and reducing code repetition.
