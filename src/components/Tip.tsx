@@ -71,7 +71,7 @@ export default function Tip(){
 
     return(
         <section className="flex justify-center items-center  h-screen">
-            <div className="p-4 pb-6  flex flex-col justify-center w-4/5 md:w-2/3 bg-white/10 backdrop-blur-md border border-blue-900/20 rounded-2xl shadow-xl max-w-3xl">
+            <div className="p-4 pb-6  my-6 flex flex-col justify-center w-10/12 md:w-2/3 bg-white/10 backdrop-blur-md border border-blue-900/20 rounded-2xl shadow-xl max-w-3xl">
                 <div className="mb-8">
                     <h1 className="text-center font-bold">Tip Calculator</h1>
                     <p className="text-center">Enter your details</p>
