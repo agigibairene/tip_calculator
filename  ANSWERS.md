@@ -21,7 +21,9 @@
 3. For styling, Tailwind CSS, a CSS framework, was used. Its low-level utility classes allowed direct styling of elements within the .tsx files, smoothing the styling process and removing the need to navigate between files. Tailwind also made responsive design easier because it contains breakpoint utility classes 
 
 4. Layout decision: split-pane design
-    One major visual decision was splitting the interface into two equal columns on desktop and stacked layout on mobile: A split layout reduces cognitive load because users don’t need to scroll between input and result. On mobile, it collapses into a column because horizontal space becomes limited, but the same logical flow is preserved.
+    One major visual decision was splitting the interface into two equal columns on desktop and stacked layout on mobile: A split layout such that users don’t need to scroll between input and result. On mobile, it collapses into a column because horizontal space becomes limited, but the same logical flow is preserved.
+
+5. Rounded **Amount Per Person** to the nearest whole number to avoid them paying below the amount
 
 
 ## Responsive & accessibility

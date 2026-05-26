@@ -150,15 +150,15 @@ export default function Tip() {
 
   return (
     <section className="flex justify-center items-center h-screen">
-      <div className="p-4 pb-6 my-6 flex flex-col bg-white justify-center w-10/12 md:w-2/3 backdrop-blur-md  border border-purple-900/20 rounded-2xl shadow-slate-500 shadow-lg max-w-3xl">
+      <div className="p-4 pb-6 my-6 flex flex-col bg-white justify-center w-10/12 md:w-2/3 backdrop-blur-md  border border-blue-900/20 rounded-2xl shadow-slate-500 shadow-lg max-w-3xl">
 
-        <h1 className="text-center font-bold text-[#6c20df] text-2xl mb-4">
+        <h1 className="text-center font-bold text-blue-600 text-2xl mb-4">
           Tip Calculator
         </h1>
 
         <div className="flex md:flex-row flex-col gap-4">
 
-          <div className="md:w-1/2 w-full border px-3 py-5 border-purple-400 rounded-lg">
+          <div className="md:w-1/2 w-full border px-3 py-5 border-blue-400 rounded-lg">
 
             <div className="flex flex-col mb-6">
                 <label>Bill</label>
@@ -173,7 +173,7 @@ export default function Tip() {
                     onChange={handleChange}
                     max="1000000000"
                     onBlur={handleBlur}
-                    className="w-full pl-8 pr-4 py-2 outline-[#6c20df] border rounded-lg border-[#6c20df]"
+                    className="w-full pl-8 pr-4 py-2 outline-blue-600 border rounded-lg border-blue-600"
                     />
                 </div>
             {touched.bill && errors.bill && (<p className="text-xs text-red-500 mt-1">{errors.bill} </p>)}
@@ -188,9 +188,9 @@ export default function Tip() {
                   <button
                     key={btn}
                     onClick={() => handleTipClick(btn)}
-                    className={`flex-1 min-w-0 py-2 rounded-lg cursor-pointer border border-purple-400 ${
+                    className={`flex-1 min-w-0 py-2 rounded-lg cursor-pointer border border-blue-400 ${
                       formData.tipPercent === btn
-                        ? "bg-[#6c20df] text-white"
+                        ? "bg-blue-600 text-white"
                         : "bg-white text-black"
                     }`}
                   >
@@ -205,7 +205,7 @@ export default function Tip() {
                   max="1000000"
                   onChange={handleChange}
                   placeholder="Custom"
-                  className="flex-1 min-w-0 border text-center border-purple-400 outline-[#6c20df] rounded-lg py-2"
+                  className="flex-1 min-w-0 border text-center border-blue-400 outline-blue-600 rounded-lg py-2"
                 />
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function Tip() {
                 value={formData.people}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="outline-[#6c20df] px-4 py-2 border border-purple-400 rounded-lg"
+                className="outline-blue-600 px-4 py-2 border border-blue-400 rounded-lg"
               />
 
               {touched.people && errors.people && (
@@ -230,27 +230,27 @@ export default function Tip() {
             </div>
           </div>
 
-          <div className="border-purple-400 px-3 py-5 rounded-lg md:w-1/2 border">
+          <div className="border-blue-400 px-3 py-5 rounded-lg md:w-1/2 border">
 
-            <p className="text-center text-[#6c20df] mb-4 font-bold text-lg">
+            <p className="text-center text-blue-600 mb-4 font-bold text-lg">
               Your Results
             </p>
 
-            <div className="flex mb-6 justify-between border border-purple-400 rounded-lg items-center px-4 py-4">
+            <div className="flex mb-6 justify-between border border-blue-400 rounded-lg items-center px-4 py-4">
               <p className="font-bold">Tip</p>
               <p className="font-bold">
                 ${tipAmount.toFixed(2)}
               </p>
             </div>
 
-            <div className="flex mb-6 justify-between border border-purple-400 rounded-lg px-4 py-4">
+            <div className="flex mb-6 justify-between border border-blue-400 rounded-lg px-4 py-4">
               <p className="font-bold">Total</p>
               <p className="font-bold">
                 ${total.toFixed(2)}
               </p>
             </div>
 
-            <div className="flex justify-between border border-purple-400 rounded-lg px-4 py-4">
+            <div className="flex justify-between border border-blue-400 rounded-lg px-4 py-4">
               <p className="font-bold">
                 Amount Per Person
               </p>
@@ -263,7 +263,7 @@ export default function Tip() {
         </div>
 
         <button
-          className="px-4 py-2 rounded-lg mt-4 mx-auto cursor-pointer bg-purple-700 font-bold text-white w-20"
+          className="px-4 py-2 rounded-lg mt-4 mx-auto cursor-pointer bg-blue-700 font-bold text-white w-20"
           onClick={handleReset}
         >
           Reset

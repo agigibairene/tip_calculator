@@ -4,7 +4,6 @@
 
 body{
   font-family: "Google Sans", sans-serif;
-  @apply bg-no-repeat bg-cover bg-center min-h-screen;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
