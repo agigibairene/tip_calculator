@@ -149,7 +149,7 @@ export default function Tip() {
   }, [total, people]);
 
   return (
-    <section className="flex justify-center items-center h-screen">
+    <section className="flex justify-center items-center min-h-screen">
       <div className="p-4 pb-6 my-6 flex flex-col bg-white justify-center w-10/12 md:w-2/3 backdrop-blur-md  border border-blue-900/20 rounded-2xl shadow-slate-500 shadow-lg max-w-3xl">
 
         <h1 className="text-center font-bold text-blue-600 text-2xl mb-4">
@@ -256,7 +256,7 @@ export default function Tip() {
               </p>
 
               <p className="font-bold">
-                ${perPerson.toFixed(2)}
+                ${Math.ceil(perPerson)}
               </p>
             </div>
           </div>
